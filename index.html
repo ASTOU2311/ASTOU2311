@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hi html </title>
+	  
+	  <video src="D:\【崩坏三】短片CG合集 4K 120帧 无水印 收藏向 (1).mp4"" decoding="async" autoplay="" muted="" loop="" playsinline=""></video>	
+																													   <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哔哩哔哩头部季节</title>
+</head>
+
+<style>
+    body {
+        margin: 0;
+    }
+    
+    header {
+        height: 160px;
+        position: relative;
+        overflow: hidden;
+        --percentage: 0.5;
+    }
+    
+    header .view,
+    header .tree {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    header img,
+    header video {
+        position: absolute;
+        display: block;
+        width: 120%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    header .morning {
+        z-index: 20;
+        opacity: calc(1 - (var(--percentage) - 0.25) / 0.25);
+        /*这里的减号必须要空格*/
+    }
+    
+    header .afternoon {
+        z-index: 10;
+        opacity: calc(1 - (var(--percentage) - 0.5) / 0.5);
+    }
+    
+    header .view {
+        transform: translatex(calc(var(--percentage) * 100px));
+    }
+    
+    header .tree {
+        transform: translatex(calc(var(--percentage) * 50px));
+        filter: blur(3px);
+    }
+    
+    header .view,
+    header .tree,
+    header .morning,
+    header .afternoon {
+        transition: .2s all ease-in;
+    }
+    
+    header.moving .view,
+    header.moving .tree,
+    header.moving .morning,
+    header.moving .afternoon {
+        transition: none;
+    }
+    
+    header .window-cover {
+        opacity: calc((var(--percentage) - 0.9) / 0.1);
+    }
+</style>
+
+<body>
+    <header>
+        <div class="view">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-1.jpg" class="morning" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-2.jpg" class="afternoon" alt="">
+            <video autoplay loop muted class="evening">
+                <source src="https://assets.codepen.io/2002878/bilibili-winter-view-3.webm" type="video/webm" />
+            </video>
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-3-snow.png" class="window-cover" alt="">
+        </div>
+        <div class="tree">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-1.png" class="morning" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-2.png" class="afternoon" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-3.png" class="evening" alt="">
+        </div>
+    </header>
+
+</body>
+<script>
+    let startingPoint
+    const header = document.querySelector('header')
+
+    header.addEventListener('mouseenter', (e) => {
+        startingPoint = e.clientX
+        header.classList.add('moving')
+    })
+
+    header.addEventListener('mouseout', (e) => {
+        header.classList.remove('moving')
+        header.style.setProperty('--percentage', 0.5)
+    })
+
+    header.addEventListener('mousemove', (e) => {
+        let percentage = (e.clientX - startingPoint) / window.outerWidth + 0.5
+
+        header.style.setProperty('--percentage', percentage)
+    })
+</script>
+
+</html>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.0.0.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">派蒙</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">原神 <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">抽卡</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">背包</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">原石</a>
+              <a class="dropdown-item" href="#">崩坏2</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">崩坏3</a>
+            </div>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">视频</button>
+        </form>
+      </div>
+    </nav>
+    <div class="container mt-2">
+      <div class="row">
+        <div class="col-12">
+          <div class="jumbotron">
+            <h1 class="text-center">源神</h1>
+            <div class="row justify-content-center">
+              <div class="col-auto">
+                <p><a class="btn btn-success btn-lg" href="#" role="button">崩坏4</a> </p>
+              </div>
+              <div class="col-auto">
+                <p><a class="btn btn-primary btn-lg" href="#" role="button">崩坏</a> </p>
+              </div>
+            </div>
+            <p class="text-center">原神启动</p>
+            <img src="C:\Users\Hasee\Pictures\Screenshots\屏幕截图 2024-05-16 091846.png" "alt="" class="img-fluid"> 
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="text-center col-md-6 col-12">
+          <h3>Lorem ipsum</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, magnam?</p>
+          <a class="btn btn-danger btn-lg" href="#" role="button">Tutorials</a>
+        </div>
+        <div class="text-center col-md-6 col-12">
+          <h3>Lorem ipsum</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, magnam?</p>
+          <a class="btn btn-info btn-lg" href="#" role="button">Documentation</a>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-12">
+          <h2>Lorem ipsum</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis accusamus praesentium eveniet ad unde doloremque ex officia eius ab quibusdam.</p>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+          <h2>Lorem ipsum</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, mollitia natus amet eligendi consequuntur. Veritatis ullam debitis voluptas repellat laboriosam.</p>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+          <h2> Lorem ipsum</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, error, itaque non vel architecto ratione obcaecati doloribus delectus illum harum?</p>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12">
+          <h2>Lorem ipsum</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, nam voluptate accusantium nulla distinctio odit aliquam voluptatem ab. Earum.</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <section>
+      <h2 class="text-center">Video Tutorial</h2>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/lFqDM_YlXV8"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="container mt-4">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <img class="card-img-top" src="images/600X300.gif" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Feature</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt, at.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="card">
+            <img class="card-img-top" src="images/600X300.gif" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title">Feature</h5>
+              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt, at.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="container py-sm-4">
+          <div class="row">
+            <div class="col-md-10 my-4 mx-auto">
+              <h2 class="text-center">Pricing Table</h2>
+              <hr>
+              <div class="row no-gutters my-3">
+                <div class="col-md-4 pr-2">
+                  <div class="list-group text-center my-3">
+                    <div class="list-group-item text-white bg-dark">
+                      <h4 class="text-center my-1">Basic</h4>
+                    </div>
+                    <div class="list-group-item text-uppercase font-weight-bold">
+                      Free
+                    </div>
+                    <a href="#" class="list-group-item">
+                    100 GB HDD Storage
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Web Server
+                    </a>
+                    <a href="#" class="list-group-item">
+                    DNS Hosting
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Mail Server
+                    </a>
+                    <div class="list-group-item">
+                      <button class="btn btn-success btn-lg btn-block text-truncate">Sign-up</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="list-group text-center">
+                    <div class="list-group-item text-white bg-dark">
+                      <h4 class="text-center my-1">Standard<br></h4>
+                    </div>
+                    <div class="list-group-item text-uppercase font-weight-bold">
+                      $99/mo.
+                    </div>
+                    <a href="#" class="list-group-item">
+                    1 TB HDD Storage
+                    </a>
+                    <a href="#" class="list-group-item">
+                  Database Option
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Web Server
+                    </a>
+                    <a href="#" class="list-group-item">
+                    DNS Hosting
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Mail Server
+                    </a>
+                    <a href="#" class="list-group-item">
+                    24/7 Monitoring
+                    </a>
+                    <div class="list-group-item">
+                      <button class="btn btn-success btn-lg btn-block text-truncate">Buy Now</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4 pl-2">
+                  <div class="list-group text-center my-3">
+                    <div class="list-group-item text-white bg-dark">
+                      <h4 class="text-center my-1">Managed</h4>
+                    </div>
+                    <div class="list-group-item text-uppercase font-weight-bold">
+                      Contact Us
+                    </div>
+                    <a href="#" class="list-group-item">
+                    Upto 10 TB HDD Storage
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Consultation
+                    </a>
+                    <a href="#" class="list-group-item">
+                    Custom Servers
+                    </a>
+                    <a href="#" class="list-group-item">
+                    24/7 Support
+                    </a>
+                    <div class="list-group-item">
+                      <button class="btn btn-success btn-lg btn-block text-truncate">Contact Us</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-md-0 mb-2">
+          <h2>Contact Us</h2>
+          <address>
+            <strong>MyCompany, Inc.</strong><br>
+            Sunny Autumn Plaza, Grand Coulee,<br>
+            CA, 91308-4075, US<br>
+            <abbr title="Phone">P:</abbr> (123) 456-7890
+          </address>
+          <h4>Social</h4>
+          <div class="row">
+            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
+            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
+            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
+            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-12">
+          <h2>Testimonials</h2>
+          <ul class="list-unstyled">
+            <li class="media">
+              <img class="mr-3" src="images/35X35.gif" alt="Generic placeholder image">
+              <div class="media-body">
+                <h5 class="mt-0 mb-1">Heading 1</h5>
+                <p class="mb-0">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
+              </div>
+            </li>
+            <li class="media my-4">
+              <img class="mr-3" src="images/35X35.gif" alt="Generic placeholder image">
+              <div class="media-body">
+                <h5 class="mt-0 mb-1">Heading 2</h5>
+                <p class="mb-0">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-4 col-12">
+          <h2>About Us</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, voluptates, soluta velit nostrum ut iste exercitationem vitae ipsum repellendus laudantium ab possimus nemo odio cumque illum nulla laborum blanditiis unde.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, voluptates, soluta velit nostrum ut iste exercitationem vitae ipsum repellendus laudantium ab possimus nemo odio cumque illum nulla laborum blanditiis unde.</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <footer class="text-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <p>Copyright © MyWebsite. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.0.0.js"></script>
+  </body>
+</html>
