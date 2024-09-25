@@ -1,0 +1,452 @@
+<h1>hi</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简易弹幕系统</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f0f2f5, #e0e5ec);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .danmaku-container {
+            position: relative;
+            width: 100%;
+            height: 60vh;
+            background: #1c1c1c;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            z-index: 1; /* 确保弹幕容器在视频弹窗之下 */
+        }
+
+        .danmaku-input, .color-selector, .opacity-slider, .danmaku-submit, .speed-selector, .effect-selector, .resolution-selector, .search-input {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+            position: relative;
+            z-index: 1001;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .danmaku-input:focus, .color-selector:focus, .opacity-slider:focus, .danmaku-submit:hover, .speed-selector:hover, .effect-selector:hover, .resolution-selector:hover, .search-input:focus {
+            border-color: #007bff;
+        }
+
+        .danmaku-submit {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .danmaku-submit:hover {
+            background: #0056b3;
+        }
+
+        .video-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-container video {
+            width: 50%;
+            height: 50%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .video-controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .video-controls button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .video-controls button:hover {
+            background: #0056b3;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fadeInOut 2s ease-in-out;
+            z-index: 1002; /* 确保成功消息在视频弹窗之上 */
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            z-index: 1002; /* 确保控制按钮在视频弹窗之上 */
+        }
+
+        .control-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .control-buttons button:hover {
+            background: #0056b3;
+        }
+
+        .login-form, .register-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1002; /* 确保登录和注册表单在视频弹窗之上 */
+            width: 300px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #007bff;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .form-group button:hover {
+            background: #0056b3;
+        }
+
+        .form-toggle a {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .form-toggle a:hover {
+            color: #0056b3;
+        }
+
+        .live2d-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 250px;
+            height: 400px;
+            pointer-events: none; /* 防止遮挡其他元素 */
+        }
+
+        .danmaku {
+            position: absolute;
+            color: var(--danmaku-color);
+            font-size: 20px;
+            opacity: var(--danmaku-opacity);
+            transition: left 0.5s, opacity 0.5s;
+        }
+
+        .danmaku.fade {
+            animation: fadeInOut 2s ease-in-out infinite;
+        }
+
+        .danmaku.shake {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .search-results {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1002; /* 确保搜索结果在视频弹窗之上 */
+        }
+
+        .search-result {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-result:hover {
+            background: #f8f9fa;
+        }
+
+        .comments-container {
+            margin-top: 20px;
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1002; /* 确保评论容器在视频弹窗之上 */
+        }
+
+        .comment-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-submit {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .comment-submit:hover {
+            background: #0056b3;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .comment-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.3s;
+        }
+
+        .comment-item:hover {
+            background: #f8f9fa;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .rating-container {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            z-index: 1002; /* 确保评分容器在视频弹窗之上 */
+        }
+
+        .rating-stars {
+            display: flex;
+            margin-right: 10px;
+        }
+
+        .rating-star {
+            font-size: 24px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .rating-star.active {
+            color: gold;
+        }
+
+        .rating-value {
+            font-size: 18px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .control-buttons button, .video-controls button, .form-group button, .comment-submit {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .login-form, .register-form {
+                width: 90%;
+            }
+        }
+
+        .danmaku-send-container {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            z-index: 1002; /* 确保发送弹幕容器在视频弹窗之上 */
+        }
+    </style>
+</head>
+<body>
+    <div class="danmaku-container" id="danmaku-container"></div>
+
+    <!-- 发送弹幕容器 -->
+    <div class="danmaku-send-container">
+        <input type="text" class="danmaku-input" id="danmaku-input" placeholder="请输入弹幕...">
+        <input type="color" class="color-selector" id="color-selector" value="#ffffff">
+        <input type="range" class="opacity-slider" id="opacity-slider" min="0.1" max="1" step="0.1" value="1">
+        <button class="danmaku-submit" onclick="sendDanmaku()">发送</button>
+    </div>
+
+    <!-- 视频弹窗 -->
+    <div class="video-container" id="video-container">
+        <video controls>
+            <source src="D:\【有栖Mana】给mana做了片头哦!.给mana做了片头哦!.251453846.mp4"" type="video/mp4">
+            您的浏览器不支持 video 标签。
+        </video>
+        <div class="video-controls">
+            <button onclick="closeVideo()">关闭</button>
+        </div>
+    </div>
+
+    <!-- 成功消息 -->
+    <div class="success-message" id="success-message">弹幕发送成功！</div>
+
+    <script>
+        function sendDanmaku() {
+            const input = document.getElementById('danmaku-input');
+            const text = input.value.trim();
+            if (text) {
+                const danmakuContainer = document.getElementById('danmaku-container');
+                const newDanmaku = document.createElement('div');
+                newDanmaku.className = 'danmaku';
+                newDanmaku.style.color = document.getElementById('color-selector').value;
+                newDanmaku.style.opacity = document.getElementById('opacity-slider').value;
+                newDanmaku.textContent = text;
+
+                // 计算初始位置
+                const containerWidth = danmakuContainer.offsetWidth;
+                const danmakuWidth = newDanmaku.offsetWidth;
+                newDanmaku.style.left = `${containerWidth}px`;
+
+                // 添加到容器
+                danmakuContainer.appendChild(newDanmaku);
+
+                // 动画效果
+                newDanmaku.style.transition = 'left 5s linear, opacity 5s linear';
+                newDanmaku.style.left = `-${danmakuWidth}px`;
+
+                // 删除弹幕
+                setTimeout(() => {
+                    danmakuContainer.removeChild(newDanmaku);
+                }, 5000);
+
+                // 清空输入框
+                input.value = '';
+
+                // 显示成功消息
+                const successMessage = document.getElementById('success-message');
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        function openVideo() {
+            const videoContainer = document.getElementById('video-container');
+            videoContainer.style.display = 'flex';
+        }
+
+        function closeVideo() {
+            const videoContainer = document.getElementById('video-container');
+            videoContainer.style.display = 'none';
+        }
+    </script>
+	<video src="https://www.live2d.com/wp-content/themes/cubism_new/assets/img/index/index-main-2023.mp4" decoding="async" autoplay="" muted="" loop="" playsinline=""></video>												 
+</body>
+</html>										 
