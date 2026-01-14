@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明日方舟·涂鸦&文件上传</title>
+    <!-- 引入Tailwind CSS（快速实现明日方舟风格） -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 自定义明日方舟配色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        arknights: {
+                            dark: '#1E2027', // 背景深灰
+                            blue: '#3B82F6', // 主蓝
+                            red: '#EF4444', // 点缀红
+                            light: '#E2E8F0', // 浅灰文本
+                            card: '#2D3142', // 卡片底色
+                        },
+                    },
+                    fontFamily: {
+                        arknights: ['"Noto Sans SC"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .arknights-bg {
+                background-image: url('https://upload-bbs.mihoyo.com/upload/2023/08/10/129035610/arknights-bg.jpg'); /* 明日方舟背景图 */
+                background-size: cover;
+                background-attachment: fixed;
+            }
+            .canvas-border {
+                border: 2px solid #3B82F6;
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            }
+        }
+    </style>
+    <!-- 引入Font Awesome（图标） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-arknights-dark text-arknights-light font-arknights arknights-bg">
+    <!-- 顶部导航 -->
+    <nav class="bg-arknights-card/80 backdrop-blur-md py-4 px-6 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-arknights-blue">
+                <<i class="fa-solid fa-shield-halved mr-2"></</i>明日方舟·涂鸦上传站
+            </h1>
+            <a href="index.html" class="text-arknights-light hover:text-arknights-blue transition-colors">
+                <<i class="fa-solid fa-house mr-1"></</i>返回主页
+            </a>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container mx-auto py-8 px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- 涂鸦区域 -->
+            <div class="bg-arknights-card/90 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <<i class="fa-solid fa-pen-nib text-arknights-red mr-2"></</i>涂鸦画板
+                </h2>
+                <div class="flex flex-wrap gap-4 mb-4">
+                    <button id="clearBtn" class="bg-arknights-blue hover:bg-blue-700 text-white py-2 px-4 rounded transition-colors">
+                        <<i class="fa-solid fa-trash mr-1"></</i>清空画板
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <label for="colorPicker" class="whitespace-nowrap">画笔颜色：</label>
+                        <input type="color" id="colorPicker" value="#3B82F6" class="w-8 h-8 rounded-full cursor-pointer">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="lineWidth" class="whitespace-nowrap">画笔粗细：</label>
+                        <input type="range" id="lineWidth" min="1" max="20" value="5" class="w-24">
+                    </div>
+                </div>
+                <canvas id="drawingCanvas" width="600" height="400" class="canvas-border bg-white rounded w-full"></canvas>
+            </div>
+
+            <!-- 文件上传区域 -->
+            <div class="bg-arknights-card/90 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-bold mb-4 flex items-center">
+                    <<i class="fa-solid fa-file-upload text-arknights-red mr-2"></</i>文件上传
+                </h2>
+                <div class="mb-4">
+                    <p class="text-sm text-gray-400 mb-2">支持格式：表情包（PNG/JPG/GIF，≤400KB）、压缩包（ZIP/RAR，≤300MB）</p>
+                    <input type="file" id="fileInput" accept=".png,.jpg,.gif,.zip,.rar" class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
+                        file:bg-arknights-blue file:text-white hover:file:bg-blue-700 cursor-pointer">
+                </div>
+                <div id="uploadProgress" class="hidden mb-4">
+                    <div class="text-sm mb-1">上传进度：</div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                        <div id="progressBar" class="bg-arknights-blue h-2.5 rounded-full" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div id="filePreview" class="hidden mt-4">
+                    <h3 class="font-bold mb-2">预览：</h3>
+                    <div id="previewContent" class="max-w-full max-h-40 overflow-auto"></div>
+                </div>
+                <button id="uploadBtn" class="bg-arknights-red hover:bg-red-700 text-white py-2 px-4 rounded transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <<i class="fa-solid fa-cloud-upload mr-1"></</i>上传文件
+                </button>
+            </div>
+        </div>
+
+        <!-- 已上传文件列表 -->
+        <div class="mt-8 bg-arknights-card/90 p-6 rounded-lg shadow-lg">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <<i class="fa-solid fa-file-lines text-arknights-red mr-2"></</i>已上传文件
+            </h2>
+            <ul id="fileList" class="space-y-3">
+                <li class="text-gray-400 italic">暂无上传文件</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 底部版权 -->
+    <footer class="mt-12 py-4 text-center text-sm text-gray-500">
+        <p>© 2026 明日方舟·涂鸦上传站 | 仅用于演示，文件不会实际存储</p>
+    </footer>
+
+    <script>
+        // 涂鸦画板功能
+        const canvas = document.getElementById('drawingCanvas');
+        const ctx = canvas.getContext('2d');
+        const clearBtn = document.getElementById('clearBtn');
+        const colorPicker = document.getElementById('colorPicker');
+        const lineWidth = document.getElementById('lineWidth');
+        let isDrawing = false;
+
+        // 初始化画笔
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = colorPicker.value;
+        ctx.lineWidth = lineWidth.value;
+
+        // 画板事件
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        clearBtn.addEventListener('click', clearCanvas);
+        colorPicker.addEventListener('input', updateColor);
+        lineWidth.addEventListener('input', updateLineWidth);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            ctx.beginPath();
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.moveTo(x, y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ctx.lineTo(x, y);
+            ctx.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function updateColor() {
+            ctx.strokeStyle = colorPicker.value;
+        }
+
+        function updateLineWidth() {
+            ctx.lineWidth = lineWidth.value;
+        }
+
+        // 文件上传功能
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const filePreview = document.getElementById('filePreview');
+        const previewContent = document.getElementById('previewContent');
+        const fileList = document.getElementById('fileList');
+        let selectedFile = null;
+
+        // 选择文件事件
+        fileInput.addEventListener('change', (e) => {
+            selectedFile = e.target.files[0];
+            if (!selectedFile) return;
+
+            // 验证文件大小
+            const maxSize = selectedFile.name.match(/\.(zip|rar)$/i) ? 300 * 1024 * 1024 : 400 * 1024;
+            if (selectedFile.size > maxSize) {
+                alert(`文件过大！${selectedFile.name.match(/\.(zip|rar)$/i) ? '压缩包' : '表情包'}最大支持${maxSize / 1024}KB`);
+                selectedFile = null;
+                fileInput.value = '';
+                return;
+            }
+
+            // 显示预览
+            filePreview.classList.remove('hidden');
+            previewContent.innerHTML = '';
+            if (selectedFile.type.match('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(selectedFile);
+                img.className = 'max-w-full max-h-40 rounded';
+                previewContent.appendChild(img);
+            } else {
+                previewContent.innerHTML = `<p class="bg-gray-800 p-2 rounded"><<i class="fa-solid fa-file-archive mr-1"></</i>${selectedFile.name}</p>`;
+            }
+
+            uploadBtn.disabled = false;
+        });
+
+        // 上传文件事件（仅演示，实际需后端接口）
+        uploadBtn.addEventListener('click', () => {
+            if (!selectedFile) return;
+
+            // 显示进度条
+            uploadProgress.classList.remove('hidden');
+            progressBar.style.width = '0%';
+
+            // 模拟上传进度
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        // 上传完成：添加到文件列表
+                        const fileItem = document.createElement('li');
+                        fileItem.className = 'flex justify-between items-center p-2 bg-gray-800 rounded';
+                        const fileIcon = selectedFile.type.match('image/') ? 
+                            '<<i class="fa-solid fa-image text-arknights-blue mr-2"></</i>' : 
+                            '<<i class="fa-solid fa-file-archive text-arknights-red mr-2"></</i>';
+                        fileItem.innerHTML = `
+                            <div class="flex items-center">
+                                ${fileIcon}
+                                <span>${selectedFile.name}</span>
+                            </div>
+                            <span class="text-sm text-gray-400">${(selectedFile.size / 1024).toFixed(2)}KB</span>
+                        `;
+
+                        // 替换默认提示
+                        if (fileList.querySelector('li.italic')) {
+                            fileList.innerHTML = '';
+                        }
+                        fileList.appendChild(fileItem);
+
+                        // 重置状态
+                        uploadProgress.classList.add('hidden');
+                        filePreview.classList.add('hidden');
+                        fileInput.value = '';
+                        selectedFile = null;
+                        uploadBtn.disabled = true;
+                        alert('文件上传成功（演示模式，实际未存储）');
+                    }, 500);
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>
