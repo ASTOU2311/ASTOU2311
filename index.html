@@ -114,6 +114,36 @@
                 height: 120px;
             }
         }
+
+        /* 跳转按钮自定义样式 */
+        .nav-music-btn {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white !important;
+            margin-left: 10px;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .nav-music-btn:hover {
+            background-color: #bb2d3b;
+            border-color: #b02a37;
+        }
+
+        .page-jump-area {
+            background-color: #f8f9fa;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .jump-btn {
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -134,7 +164,7 @@
         </div>
     </header>
 
-    <!-- Bootstrap导航栏（原神主题） -->
+    <!-- Bootstrap导航栏（原神主题）- 新增音乐播放器跳转按钮 -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">派蒙</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
@@ -159,6 +189,12 @@
                         <a class="dropdown-item" href="#">崩坏3</a>
                     </div>
                 </li>
+                <!-- 新增：导航栏音乐播放器跳转按钮 -->
+                <li class="nav-item">
+                    <a class="nav-link nav-music-btn" href="genshin-player.html">
+                        <i class="fas fa-music"></i> 原神音乐播放器
+                    </a>
+                </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="搜索原神相关" aria-label="Search">
@@ -179,6 +215,12 @@
                         </div>
                         <div class="col-auto">
                             <p><a class="btn btn-primary btn-lg" href="#" role="button">崩坏</a></p>
+                        </div>
+                        <!-- 新增：轮播图区域添加播放器跳转按钮 -->
+                        <div class="col-auto">
+                            <p><a class="btn btn-danger btn-lg" href="genshin-player.html" role="button">
+                                <i class="fas fa-music"></i> 原神音乐
+                            </a></p>
                         </div>
                     </div>
                     <p class="text-center">原神启动</p>
@@ -406,6 +448,22 @@
                 <p>原神攻略站专注于提供最新、最全面的原神游戏攻略，涵盖角色、配队、抽卡、地图探索等全方面内容，助力每一位旅行者畅游提瓦特。</p>
                 <p>我们的团队由资深原神玩家组成，持续更新版本内容，确保攻略的时效性和准确性。</p>
             </div>
+        </div>
+    </div>
+
+    <!-- 新增：页面末尾统一跳转区域 -->
+    <div class="container page-jump-area">
+        <h2 class="text-center mb-4">快速访问</h2>
+        <div class="d-flex flex-wrap justify-content-center">
+            <a href="genshin-player.html" class="btn btn-danger jump-btn">
+                <i class="fas fa-music mr-2"></i>原神音乐播放器
+            </a>
+            <a href="arknights-upload.html" class="btn btn-primary jump-btn">
+                <i class="fas fa-pen-nib mr-2"></i>明日方舟涂鸦上传页
+            </a>
+            <a href="simple-danmaku-system.html" class="btn btn-success jump-btn">
+                <i class="fas fa-comment-dots mr-2"></i>简易弹幕系统
+            </a>
         </div>
     </div>
 
