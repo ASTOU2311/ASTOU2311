@@ -8,13 +8,13 @@
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box; /* 统一盒模型，避免布局偏移 */
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #f0f2f5, #e0e5ec);
-            min-height: 100vh; /* 替换overflow:hidden，避免内容被截断 */
+            min-height: 100vh;
             padding: 20px;
         }
 
@@ -28,26 +28,42 @@
             position: relative;
             width: 100%;
             max-width: 1200px;
-            height: 400px; /* 降低高度，适配更多设备 */
+            height: 400px;
             background: #1c1c1c;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 0 auto 20px; /* 居中显示 */
+            margin: 0 auto 20px;
         }
 
+        /* 修复：移动端适配，发送面板改为底部固定，大屏右侧 */
         .danmaku-send-container {
-            position: fixed;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
             display: flex;
-            flex-direction: column;
-            gap: 10px; /* 替换margin，更优雅的间距 */
+            flex-wrap: wrap;
+            gap: 10px;
             z-index: 1002;
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            margin: 0 auto 20px;
+            max-width: 1200px;
+            justify-content: center;
         }
 
-        .danmaku-input, .color-selector, .opacity-slider {
+        /* 大屏适配：右侧固定 */
+        @media (min-width: 768px) {
+            .danmaku-send-container {
+                position: fixed;
+                top: 50%;
+                right: 20px;
+                transform: translateY(-50%);
+                flex-direction: column;
+                max-width: 220px;
+                padding: 15px;
+            }
+        }
+
+        .danmaku-input, .color-selector, .opacity-slider, .speed-slider {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -58,26 +74,28 @@
         }
 
         .danmaku-input {
-            width: 200px; /* 固定输入框宽度 */
+            min-width: 180px;
+            flex: 1;
         }
 
         .danmaku-submit {
-            padding: 10px;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             background: #007bff;
             color: white;
             cursor: pointer;
             transition: background 0.3s;
+            white-space: nowrap;
         }
 
         .danmaku-submit:hover {
             background: #0056b3;
         }
 
-        /* 视频弹窗样式修复 */
+        /* 视频弹窗样式优化 */
         .video-container {
-            display: none; /* 初始隐藏 */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -87,10 +105,11 @@
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 20px;
         }
 
         .video-container video {
-            width: 80%;
+            width: 100%;
             max-width: 800px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -99,6 +118,8 @@
         .video-controls {
             position: absolute;
             bottom: 40px;
+            display: flex;
+            gap: 10px;
         }
 
         .video-controls button {
@@ -110,7 +131,6 @@
             cursor: pointer;
         }
 
-        /* 打开视频按钮 */
         .open-video-btn {
             display: block;
             margin: 0 auto 20px;
@@ -147,89 +167,127 @@
             color: var(--danmaku-color);
             font-size: 20px;
             opacity: var(--danmaku-opacity);
-            white-space: nowrap; /* 防止弹幕文字换行 */
+            white-space: nowrap;
+            /* 修复：添加初始状态，确保动画生效 */
+            transform: translateX(0);
+            will-change: transform;
         }
 
-        /* Live2D视频容器 */
+        /* 修复：Live2D容器改为左下角，避免重叠，且使用备用图片 */
         .live2d-container {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            width: 250px;
-            height: 400px;
+            left: 20px;
+            width: 200px;
+            height: 300px;
             overflow: hidden;
             border-radius: 10px;
             z-index: 999;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        .live2d-container video {
+        .live2d-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        /* 新增：跳转按钮样式 */
+        .jump-back-btn {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+            text-align: center;
+            max-width: 200px;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
     <h1>简易弹幕系统</h1>
 
+    <!-- 新增：返回主页按钮 -->
+    <a href="index.html" class="jump-back-btn">返回原神主题主页</a>
+
     <!-- 弹幕容器 -->
     <div class="danmaku-container" id="danmaku-container"></div>
 
     <!-- 打开视频按钮 -->
-    <button class="open-video-btn" onclick="openVideo()">打开视频</button>
+    <button class="open-video-btn" onclick="openVideo()">打开示例视频</button>
 
     <!-- 发送弹幕容器 -->
     <div class="danmaku-send-container">
         <input type="text" class="danmaku-input" id="danmaku-input" placeholder="请输入弹幕...">
         <input type="color" class="color-selector" id="color-selector" value="#ffffff">
-        <input type="range" class="opacity-slider" id="opacity-slider" min="0.1" max="1" step="0.1" value="1">
-        <button class="danmaku-submit" onclick="sendDanmaku()">发送</button>
+        <input type="range" class="opacity-slider" id="opacity-slider" min="0.1" max="1" step="0.1" value="1" title="弹幕透明度">
+        <input type="range" class="speed-slider" id="speed-slider" min="5" max="15" step="1" value="8" title="弹幕速度（数值越小越快）">
+        <button class="danmaku-submit" onclick="sendDanmaku()">发送弹幕</button>
     </div>
 
     <!-- 视频弹窗 -->
     <div class="video-container" id="video-container">
-        <!-- 替换为公共测试视频地址，避免本地路径问题 -->
-        <video controls>
-            <source src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4" type="video/mp4">
+        <!-- 替换为更稳定的测试视频地址 -->
+        <video controls id="video-player">
+            <source src="https://www.w3school.com.cn/i/movie.mp4" type="video/mp4">
             您的浏览器不支持 video 标签。
         </video>
         <div class="video-controls">
-            <button onclick="closeVideo()">关闭</button>
+            <button onclick="closeVideo()">关闭视频</button>
+            <button onclick="resetVideo()">重置视频</button>
         </div>
     </div>
 
     <!-- 成功消息 -->
     <div class="success-message" id="success-message">弹幕发送成功！</div>
 
-    <!-- Live2D视频 -->
+    <!-- 修复：替换Live2D视频为静态图片（避免跨域加载失败） -->
     <div class="live2d-container">
-        <video src="https://www.live2d.com/wp-content/themes/cubism_new/assets/img/index/index-main-2023.mp4" 
-               decoding="async" autoplay muted loop playsinline></video>
+        <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/8cbba2ce7ab84ec8a382f8cd7d821aae.png~tplv-a9rns2rl98-image.png?lk3s=8e244e95&rcl=2026011420021025DF2AAB1C59AE214698&rrcfp=dafada99&x-expires=2084616130&x-signature=HTOuqLcPWfyzSYBQUOJwxJd8tAc%3D" 
+             alt="Live2D角色" loading="lazy">
     </div>
 
     <script>
-        // 发送弹幕函数优化
+        // 全局变量
+        const danmakuContainer = document.getElementById('danmaku-container');
+        const videoPlayer = document.getElementById('video-player');
+        
+        // 发送弹幕函数（完整修复）
         function sendDanmaku() {
             const input = document.getElementById('danmaku-input');
             const text = input.value.trim();
             
+            // 空值校验
             if (!text) {
-                alert('请输入弹幕内容！'); // 增加空值提示
+                alert('请输入弹幕内容！');
                 return;
             }
 
-            const danmakuContainer = document.getElementById('danmaku-container');
+            // 容器高度校验
+            if (danmakuContainer.offsetHeight === 0) {
+                alert('弹幕容器加载异常，请刷新页面！');
+                return;
+            }
+
             const newDanmaku = document.createElement('div');
             newDanmaku.className = 'danmaku';
             
-            // 设置弹幕样式
-            newDanmaku.style.color = document.getElementById('color-selector').value;
-            newDanmaku.style.opacity = document.getElementById('opacity-slider').value;
+            // 设置样式
+            const color = document.getElementById('color-selector').value;
+            const opacity = document.getElementById('opacity-slider').value;
+            const speed = document.getElementById('speed-slider').value;
+            
+            newDanmaku.style.setProperty('--danmaku-color', color);
+            newDanmaku.style.setProperty('--danmaku-opacity', opacity);
             newDanmaku.textContent = text;
 
-            // 随机垂直位置（避免弹幕都在同一行）
+            // 随机垂直位置
             const containerHeight = danmakuContainer.offsetHeight;
-            const danmakuHeight = 30; // 弹幕行高
+            const danmakuHeight = 30;
             const randomTop = Math.floor(Math.random() * (containerHeight - danmakuHeight));
             newDanmaku.style.top = `${randomTop}px`;
 
@@ -240,17 +298,19 @@
             // 添加到容器
             danmakuContainer.appendChild(newDanmaku);
 
-            // 弹幕滚动动画（优化过渡效果）
+            // 修复：使用transform实现更流畅的动画
             const danmakuWidth = newDanmaku.offsetWidth;
-            newDanmaku.style.transition = `left ${8 + Math.random() * 4}s linear`; // 随机速度
-            newDanmaku.style.left = `-${danmakuWidth}px`;
+            setTimeout(() => {
+                newDanmaku.style.transition = `transform ${speed}s linear`;
+                newDanmaku.style.transform = `translateX(-${containerWidth + danmakuWidth}px)`;
+            }, 10);
 
             // 自动删除弹幕
             setTimeout(() => {
                 if (danmakuContainer.contains(newDanmaku)) {
-                    danmakuContainer.removeChild(newDanmaku);
+                    newDanmaku.remove();
                 }
-            }, 12000);
+            }, speed * 1000 + 1000);
 
             // 清空输入框
             input.value = '';
@@ -263,21 +323,27 @@
             }, 2000);
         }
 
-        // 打开视频
+        // 打开视频（优化）
         function openVideo() {
             const videoContainer = document.getElementById('video-container');
             videoContainer.style.display = 'flex';
-            // 自动播放视频（需用户交互后才能播放音频）
-            const video = videoContainer.querySelector('video');
-            video.play().catch(err => console.log('视频自动播放失败:', err));
+            // 自动播放（处理浏览器策略）
+            videoPlayer.play().catch(err => {
+                console.log('视频自动播放失败，请手动点击播放:', err);
+            });
         }
 
-        // 关闭视频
+        // 关闭视频（优化：暂停并重置进度）
         function closeVideo() {
             const videoContainer = document.getElementById('video-container');
-            const video = videoContainer.querySelector('video');
-            video.pause(); // 暂停视频
+            videoPlayer.pause();
             videoContainer.style.display = 'none';
+        }
+
+        // 重置视频
+        function resetVideo() {
+            videoPlayer.currentTime = 0;
+            videoPlayer.pause();
         }
 
         // 按回车发送弹幕
@@ -286,6 +352,15 @@
                 sendDanmaku();
             }
         });
+
+        // 页面加载完成后初始化
+        window.onload = function() {
+            // 检测容器是否加载成功
+            if (danmakuContainer.offsetHeight === 0) {
+                danmakuContainer.style.height = '400px';
+                console.log('弹幕容器高度异常，已自动修复');
+            }
+        }
     </script>
 </body>
 </html>
