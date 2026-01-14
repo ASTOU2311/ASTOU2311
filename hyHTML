@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页版合成器模拟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+            color: #e0e0e0;
+        }
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 主容器 */
+        .synth-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #16213e;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .synth-header {
+            background: #0f3460;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .header-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .header-btn span {
+            font-size: 12px;
+        }
+        .header-title {
+            margin-left: auto;
+            font-size: 18px;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        /* 标签栏 */
+        .tab-bar {
+            background: #1a1a2e;
+            display: flex;
+            border-bottom: 2px solid #0f3460;
+        }
+        .tab-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .tab-item.active {
+            background: #0f3460;
+            font-weight: bold;
+        }
+        .tab-item:hover {
+            background: #252540;
+        }
+
+        /* 主体内容区（三栏布局） */
+        .content-area {
+            display: flex;
+            height: 600px;
+        }
+
+        /* 左侧文件列表 */
+        .file-list {
+            width: 250px;
+            background: #1a1a2e;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .file-search {
+            width: 100%;
+            padding: 8px;
+            background: #252540;
+            border: 1px solid #0f3460;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .file-item {
+            padding: 8px 10px;
+            font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+        .file-item:hover {
+            background: #252540;
+        }
+        .file-time {
+            color: #888;
+            font-size: 12px;
+        }
+
+        /* 中间合成器面板 */
+        .synth-panel {
+            flex: 1;
+            background: #16213e;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .synth-preview {
+            width: 300px;
+            height: 200px;
+            background: #0f3460;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .synth-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .synth-controls {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .control-label {
+            font-size: 14px;
+            color: #e94560;
+        }
+        .control-slider {
+            width: 100%;
+            height: 6px;
+            background: #252540;
+            border-radius: 3px;
+            appearance: none;
+            outline: none;
+        }
+        .control-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #e94560;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .preset-select {
+            padding: 8px;
+            background: #252540;
+            border: 1px solid #0f3460;
+            border-radius: 4px;
+        }
+        .play-btn {
+            padding: 12px;
+            background: #e94560;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .play-btn:hover {
+            background: #d03550;
+        }
+
+        /* 右侧消息栏 */
+        .msg-bar {
+            width: 250px;
+            background: #1a1a2e;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .msg-item {
+            padding: 10px;
+            background: #252540;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .msg-title {
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 4px;
+        }
+
+        /* 底部栏 */
+        .synth-footer {
+            background: #0f3460;
+            padding: 8px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 15px;
+        }
+        .footer-link {
+            cursor: pointer;
+        }
+        .footer-link:hover {
+            color: #e94560;
+        }
+    </style>
+</head>
+<body>
+    <div class="synth-container">
+        <!-- 顶部导航 -->
+        <div class="synth-header">
+            <button class="header-btn">
+                <span>新建...</span>
+                <<i>+</</i>
+            </button>
+            <button class="header-btn">
+                <span>打开...</span>
+                <<i>📂</</i>
+            </button>
+            <button class="header-btn">
+                <span>加入...</span>
+                <<i>👥</</i>
+            </button>
+            <div class="header-title">Synth Studio Pro</div>
+        </div>
+
+        <!-- 标签栏 -->
+        <div class="tab-bar">
+            <div class="tab-item active">最近使用的文件</div>
+            <div class="tab-item">工程文件</div>
+            <div class="tab-item">项目</div>
+            <div class="tab-item">演出</div>
+            <div class="tab-item" style="margin-left: auto;">艺术家资料</div>
+            <div class="tab-item">SoundCloud</div>
+            <div class="tab-item">消息推送</div>
+        </div>
+
+        <!-- 主体内容区 -->
+        <div class="content-area">
+            <!-- 左侧文件列表 -->
+            <div class="file-list">
+                <input type="text" class="file-search" placeholder="搜索文件...">
+                <div class="file-item">
+                    <span>【天籁天使】.synth</span>
+                    <span class="file-time">今天</span>
+                </div>
+                <div class="file-item">
+                    <span>电子脉冲_01.wav</span>
+                    <span class="file-time">今天</span>
+                </div>
+                <div class="file-item">
+                    <span>未来贝斯预设.synth</span>
+                    <span class="file-time">昨天</span>
+                </div>
+                <div class="file-item">
+                    <span>钢琴音色库_02.zip</span>
+                    <span class="file-time">4天前</span>
+                </div>
+                <div class="file-item">
+                    <span>鼓组采样_03.wav</span>
+                    <span class="file-time">3天前</span>
+                </div>
+                <div class="file-item">
+                    <span>开始你的_新传奇.synth</span>
+                    <span class="file-time">5周前</span>
+                </div>
+                <div class="file-item">
+                    <span>复古合成器_05.synth</span>
+                    <span class="file-time">2个月前</span>
+                </div>
+            </div>
+
+            <!-- 中间合成器面板 -->
+            <div class="synth-panel">
+                <div class="synth-preview">
+                    <img src="https://picsum.photos/id/1025/300/200" alt="合成器预览">
+                </div>
+                <div class="synth-controls">
+                    <div class="control-group">
+                        <label class="control-label">预设音色</label>
+                        <select class="preset-select" id="presetSelect">
+                            <option>未来贝斯</option>
+                            <option>复古合成器</option>
+                            <option>钢琴音色</option>
+                            <option>电子脉冲</option>
+                            <option>鼓组采样</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">音量 (Volume)</label>
+                        <input type="range" class="control-slider" id="volumeSlider" min="0" max="100" value="70">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">滤波 (Filter)</label>
+                        <input type="range" class="control-slider" id="filterSlider" min="0" max="100" value="50">
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">共鸣 (Resonance)</label>
+                        <input type="range" class="control-slider" id="resonanceSlider" min="0" max="100" value="30">
+                    </div>
+                    <button class="play-btn" id="playBtn">播放演示音符</button>
+                </div>
+            </div>
+
+            <!-- 右侧消息栏 -->
+            <div class="msg-bar">
+                <div class="msg-item">
+                    <div class="msg-title">新素材更新</div>
+                    <div class="msg-content">cleaner_compression 音色包已上线，包含512个采样</div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-title">版本更新</div>
+                    <div class="msg-content">Studio Pro v2.3.1 修复了音色加载bug</div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-title">活动通知</div>
+                    <div class="msg-content">本月合成器大赛报名中，奖金池10000元</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部栏 -->
+        <div class="synth-footer">
+            <div>检查更新</div>
+            <div class="footer-links">
+                <div class="footer-link">关于Studio Pro</div>
+                <div class="footer-link">f</div>
+                <div class="footer-link">X</div>
+                <div class="footer-link">📺</div>
+                <div class="footer-link">📷</div>
+                <div class="footer-link">🎵</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 音频合成核心逻辑（用Web Audio API实现基础音色）
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+
+        // 播放演示音符
+        document.getElementById('playBtn').addEventListener('click', () => {
+            // 激活音频上下文（浏览器安全策略）
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            // 获取当前参数
+            const preset = document.getElementById('presetSelect').value;
+            const volume = document.getElementById('volumeSlider').value / 100;
+            const filterFreq = 200 + (document.getElementById('filterSlider').value * 20);
+            const resonance = document.getElementById('resonanceSlider').value / 10;
+
+            // 创建振荡器（基础音色）
+            const oscillator = audioCtx.createOscillator();
+            // 根据预设切换波形
+            switch(preset) {
+                case '未来贝斯':
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.value = 440; // A4
+                    break;
+                case '复古合成器':
+                    oscillator.type = 'square';
+                    oscillator.frequency.value = 330; // E4
+                    break;
+                case '钢琴音色':
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 261.63; // C4
+                    break;
+                default:
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.value = 440;
+            }
+
+            // 创建滤波器
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = filterFreq;
+            filter.Q.value = resonance;
+
+            // 创建音量控制
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.value = volume;
+
+            // 连接节点
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            // 播放并自动停止
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 1); // 播放1秒
+        });
+    </script>
+</body>
+</html>
