@@ -22,14 +22,18 @@
             text-align: center;
             color: #333;
             margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        /* 核心修改：弹幕容器改为森林背景 */
         .danmaku-container {
             position: relative;
             width: 100%;
             max-width: 1200px;
             height: 400px;
-            background: #1c1c1c;
+            /* 森林背景图 + 半透明黑色叠加，保证弹幕文字清晰 */
+            background: url('https://picsum.photos/id/15/1200/400') center/cover no-repeat, rgba(0,0,0,0.7);
+            background-blend-mode: overlay;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -93,7 +97,7 @@
             background: #0056b3;
         }
 
-        /* 视频弹窗样式优化 */
+        /* 视频弹窗样式优化（适配B站iframe） */
         .video-container {
             display: none;
             position: fixed;
@@ -108,11 +112,14 @@
             padding: 20px;
         }
 
-        .video-container video {
+        /* B站视频iframe样式 */
+        .bilibili-video {
             width: 100%;
             max-width: 800px;
+            height: 450px; /* 16:9比例适配 */
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: none;
         }
 
         .video-controls {
@@ -214,7 +221,7 @@
     <!-- 新增：返回主页按钮 -->
     <a href="index.html" class="jump-back-btn">返回原神主题主页</a>
 
-    <!-- 弹幕容器 -->
+    <!-- 弹幕容器（森林背景） -->
     <div class="danmaku-container" id="danmaku-container"></div>
 
     <!-- 打开视频按钮 -->
@@ -229,16 +236,20 @@
         <button class="danmaku-submit" onclick="sendDanmaku()">发送弹幕</button>
     </div>
 
-    <!-- 视频弹窗 -->
+    <!-- 视频弹窗（替换为B站iframe） -->
     <div class="video-container" id="video-container">
-        <!-- 替换为更稳定的测试视频地址 -->
-        <video controls id="video-player">
-            <source src="https://www.w3school.com.cn/i/movie.mp4" type="video/mp4">
-            您的浏览器不支持 video 标签。
-        </video>
+        <!-- B站视频嵌入（适配弹幕系统弹窗） -->
+        <iframe class="bilibili-video" 
+                src="https://player.bilibili.com/player.html?aid=170001&bvid=BV1mUFReZEdL&cid=1000001&p=1&autoplay=0" 
+                scrolling="no" 
+                border="0" 
+                frameborder="no" 
+                framespacing="0" 
+                allowfullscreen="true">
+        </iframe>
         <div class="video-controls">
             <button onclick="closeVideo()">关闭视频</button>
-            <button onclick="resetVideo()">重置视频</button>
+            <button onclick="refreshVideo()">刷新视频</button>
         </div>
     </div>
 
@@ -254,7 +265,7 @@
     <script>
         // 全局变量
         const danmakuContainer = document.getElementById('danmaku-container');
-        const videoPlayer = document.getElementById('video-player');
+        const videoIframe = document.querySelector('.bilibili-video');
         
         // 发送弹幕函数（完整修复）
         function sendDanmaku() {
@@ -323,27 +334,23 @@
             }, 2000);
         }
 
-        // 打开视频（优化）
+        // 打开B站视频
         function openVideo() {
             const videoContainer = document.getElementById('video-container');
             videoContainer.style.display = 'flex';
-            // 自动播放（处理浏览器策略）
-            videoPlayer.play().catch(err => {
-                console.log('视频自动播放失败，请手动点击播放:', err);
-            });
+            // 触发iframe加载（确保视频正常播放）
+            videoIframe.src = videoIframe.src;
         }
 
-        // 关闭视频（优化：暂停并重置进度）
+        // 关闭视频
         function closeVideo() {
             const videoContainer = document.getElementById('video-container');
-            videoPlayer.pause();
             videoContainer.style.display = 'none';
         }
 
-        // 重置视频
-        function resetVideo() {
-            videoPlayer.currentTime = 0;
-            videoPlayer.pause();
+        // 刷新视频（重置播放状态）
+        function refreshVideo() {
+            videoIframe.src = videoIframe.src;
         }
 
         // 按回车发送弹幕
