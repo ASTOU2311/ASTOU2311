@@ -1,412 +1,457 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="zh-CN">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hi html </title>
-	  
-	  <video src="D:\【崩坏三】短片CG合集 4K 120帧 无水印 收藏向 (1).mp4"" decoding="async" autoplay="" muted="" loop="" playsinline=""></video>	
-																													   <!DOCTYPE html>
-<html lang="en">
+    <title>原神主题页面 | 哔哩哔哩季节动效</title>
+    
+    <!-- 引入Bootstrap CDN（替换本地文件，确保全网可访问） -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- 隔离B站季节动效样式，避免与Bootstrap冲突 -->
+    <style>
+        /* 重置基础样式，避免Bootstrap影响 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>哔哩哔哩头部季节</title>
+        /* B站季节动效专属样式（独立命名空间） */
+        .bilibili-header {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            --percentage: 0.5; /* 默认中间值 */
+            margin-bottom: 20px; /* 与下方导航栏分隔 */
+        }
+        
+        .bilibili-header .view,
+        .bilibili-header .tree {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .bilibili-header img,
+        .bilibili-header video {
+            position: absolute;
+            display: block;
+            width: 120%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .bilibili-header .morning {
+            z-index: 20;
+            opacity: calc(1 - max(0, (var(--percentage) - 0.25) / 0.25)); /* 限制opacity≥0 */
+        }
+        
+        .bilibili-header .afternoon {
+            z-index: 10;
+            opacity: calc(1 - max(0, (var(--percentage) - 0.5) / 0.5)); /* 限制opacity≥0 */
+        }
+        
+        .bilibili-header .view {
+            transform: translateX(calc(var(--percentage) * 100px));
+        }
+        
+        .bilibili-header .tree {
+            transform: translateX(calc(var(--percentage) * 50px));
+            filter: blur(3px);
+        }
+        
+        .bilibili-header .view,
+        .bilibili-header .tree,
+        .bilibili-header .morning,
+        .bilibili-header .afternoon {
+            transition: .2s all ease-in;
+        }
+        
+        .bilibili-header.moving .view,
+        .bilibili-header.moving .tree,
+        .bilibili-header.moving .morning,
+        .bilibili-header.moving .afternoon {
+            transition: none;
+        }
+        
+        .bilibili-header .window-cover {
+            opacity: clamp(0, (var(--percentage) - 0.9) / 0.1, 1); /* 限制opacity 0-1 */
+        }
+
+        /* 自定义页面样式优化 */
+        .jumbotron {
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            padding: 2rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        footer {
+            padding: 2rem 0;
+            background-color: #f8f9fa;
+            margin-top: 2rem;
+        }
+
+        /* 响应式优化：小屏幕下B站头部高度自适应 */
+        @media (max-width: 768px) {
+            .bilibili-header {
+                height: 120px;
+            }
+        }
+    </style>
 </head>
-
-<style>
-    body {
-        margin: 0;
-    }
-    
-    header {
-        height: 160px;
-        position: relative;
-        overflow: hidden;
-        --percentage: 0.5;
-    }
-    
-    header .view,
-    header .tree {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    header img,
-    header video {
-        position: absolute;
-        display: block;
-        width: 120%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    header .morning {
-        z-index: 20;
-        opacity: calc(1 - (var(--percentage) - 0.25) / 0.25);
-        /*这里的减号必须要空格*/
-    }
-    
-    header .afternoon {
-        z-index: 10;
-        opacity: calc(1 - (var(--percentage) - 0.5) / 0.5);
-    }
-    
-    header .view {
-        transform: translatex(calc(var(--percentage) * 100px));
-    }
-    
-    header .tree {
-        transform: translatex(calc(var(--percentage) * 50px));
-        filter: blur(3px);
-    }
-    
-    header .view,
-    header .tree,
-    header .morning,
-    header .afternoon {
-        transition: .2s all ease-in;
-    }
-    
-    header.moving .view,
-    header.moving .tree,
-    header.moving .morning,
-    header.moving .afternoon {
-        transition: none;
-    }
-    
-    header .window-cover {
-        opacity: calc((var(--percentage) - 0.9) / 0.1);
-    }
-</style>
-
 <body>
-    <header>
+    <!-- B站季节动效头部（独立容器，避免与Bootstrap冲突） -->
+    <header class="bilibili-header" id="bilibiliHeader">
         <div class="view">
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-1.jpg" class="morning" alt="">
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-2.jpg" class="afternoon" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-1.jpg" class="morning" alt="冬日早晨">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-2.jpg" class="afternoon" alt="冬日午后">
             <video autoplay loop muted class="evening">
                 <source src="https://assets.codepen.io/2002878/bilibili-winter-view-3.webm" type="video/webm" />
             </video>
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-3-snow.png" class="window-cover" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-view-3-snow.png" class="window-cover" alt="雪景覆盖">
         </div>
         <div class="tree">
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-1.png" class="morning" alt="">
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-2.png" class="afternoon" alt="">
-            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-3.png" class="evening" alt="">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-1.png" class="morning" alt="早晨树木">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-2.png" class="afternoon" alt="午后树木">
+            <img src="https://assets.codepen.io/2002878/bilibili-winter-tree-3.png" class="evening" alt="傍晚树木">
         </div>
     </header>
 
-</body>
-<script>
-    let startingPoint
-    const header = document.querySelector('header')
-
-    header.addEventListener('mouseenter', (e) => {
-        startingPoint = e.clientX
-        header.classList.add('moving')
-    })
-
-    header.addEventListener('mouseout', (e) => {
-        header.classList.remove('moving')
-        header.style.setProperty('--percentage', 0.5)
-    })
-
-    header.addEventListener('mousemove', (e) => {
-        let percentage = (e.clientX - startingPoint) / window.outerWidth + 0.5
-
-        header.style.setProperty('--percentage', percentage)
-    })
-</script>
-
-</html>
-    <!-- Bootstrap -->
-    <link href="css/bootstrap-4.0.0.css" rel="stylesheet">
-  </head>
-  <body>
+    <!-- Bootstrap导航栏（原神主题） -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="#">派蒙</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">原神 <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">抽卡</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">背包</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">原石</a>
-              <a class="dropdown-item" href="#">崩坏2</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">崩坏3</a>
-            </div>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">视频</button>
-        </form>
-      </div>
+        <a class="navbar-brand" href="#">派蒙</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">原神 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">抽卡</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" 
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">背包</a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">原石</a>
+                        <a class="dropdown-item" href="#">崩坏2</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">崩坏3</a>
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="搜索原神相关" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">视频</button>
+            </form>
+        </div>
     </nav>
+
+    <!-- 主内容区域 -->
     <div class="container mt-2">
-      <div class="row">
-        <div class="col-12">
-          <div class="jumbotron">
-            <h1 class="text-center">源神</h1>
-            <div class="row justify-content-center">
-              <div class="col-auto">
-                <p><a class="btn btn-success btn-lg" href="#" role="button">崩坏4</a> </p>
-              </div>
-              <div class="col-auto">
-                <p><a class="btn btn-primary btn-lg" href="#" role="button">崩坏</a> </p>
-              </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="jumbotron">
+                    <h1 class="text-center">原神</h1>
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            <p><a class="btn btn-success btn-lg" href="#" role="button">崩坏4</a></p>
+                        </div>
+                        <div class="col-auto">
+                            <p><a class="btn btn-primary btn-lg" href="#" role="button">崩坏</a></p>
+                        </div>
+                    </div>
+                    <p class="text-center">原神启动</p>
+                    <!-- 替换本地图片为原神公共图片 -->
+                    <img src="https://upload-bbs.mihoyo.com/upload/2023/08/10/129035610/8c8d19c5426598064898599386556680_8556261106151391050.jpg" 
+                         alt="原神宣传图" class="img-fluid rounded">
+                </div>
             </div>
-            <p class="text-center">原神启动</p>
-            <img src="C:\Users\Hasee\Pictures\Screenshots\屏幕截图 2024-05-16 091846.png" "alt="" class="img-fluid"> 
-          </div>
         </div>
-      </div>
     </div>
+
     <div class="container">
-      <div class="row">
-        <div class="text-center col-md-6 col-12">
-          <h3>Lorem ipsum</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, magnam?</p>
-          <a class="btn btn-danger btn-lg" href="#" role="button">Tutorials</a>
+        <div class="row">
+            <div class="text-center col-md-6 col-12">
+                <h3>原神攻略</h3>
+                <p>原神全角色攻略，新手入门到大佬进阶</p>
+                <a class="btn btn-danger btn-lg" href="#" role="button">教程</a>
+            </div>
+            <div class="text-center col-md-6 col-12">
+                <h3>原神资讯</h3>
+                <p>最新版本更新、活动预告、角色爆料</p>
+                <a class="btn btn-info btn-lg" href="#" role="button">资讯</a>
+            </div>
         </div>
-        <div class="text-center col-md-6 col-12">
-          <h3>Lorem ipsum</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum, magnam?</p>
-          <a class="btn btn-info btn-lg" href="#" role="button">Documentation</a>
-        </div>
-      </div>
     </div>
+
     <hr>
+
     <div class="container">
-      <div class="row">
-        <div class="col-lg-3 col-md-6 col-12">
-          <h2>Lorem ipsum</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis accusamus praesentium eveniet ad unde doloremque ex officia eius ab quibusdam.</p>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-12">
+                <h2>角色攻略</h2>
+                <p>全角色天赋、命座、配装、输出手法详解，打造最强队伍。</p>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+                <h2>抽卡模拟器</h2>
+                <p>模拟原神抽卡概率，提前规划原石使用，避免歪卡。</p>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+                <h2>地图探索</h2>
+                <p>全地图宝箱、神瞳、任务收集攻略，轻松满探索度。</p>
+            </div>
+            <div class="col-lg-3 col-md-6 col-12">
+                <h2>剧情解析</h2>
+                <p>原神世界观、角色背景、主线剧情深度解析。</p>
+            </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-12">
-          <h2>Lorem ipsum</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, mollitia natus amet eligendi consequuntur. Veritatis ullam debitis voluptas repellat laboriosam.</p>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
-          <h2> Lorem ipsum</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quasi, error, itaque non vel architecto ratione obcaecati doloribus delectus illum harum?</p>
-        </div>
-        <div class="col-lg-3 col-md-6 col-12">
-          <h2>Lorem ipsum</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque, nam voluptate accusantium nulla distinctio odit aliquam voluptatem ab. Earum.</p>
-        </div>
-      </div>
     </div>
+
     <hr>
+
+    <!-- 替换YouTube为B站原神视频（国内可访问） -->
     <section>
-      <h2 class="text-center">Video Tutorial</h2>
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div class="embed-responsive embed-responsive-16by9">
-              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/lFqDM_YlXV8"></iframe>
+        <h2 class="text-center">视频教程</h2>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="https://player.bilibili.com/player.html?aid=897920099&bvid=BV1mK411575j&cid=207230777&p=1" 
+                                scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </section>
+
     <div class="container mt-4">
-      <div class="row">
-        <div class="col-sm-6">
-          <div class="card">
-            <img class="card-img-top" src="images/600X300.gif" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Feature</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt, at.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="card">
-            <img class="card-img-top" src="images/600X300.gif" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title">Feature</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deserunt, at.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row">
-        <div class="container py-sm-4">
-          <div class="row">
-            <div class="col-md-10 my-4 mx-auto">
-              <h2 class="text-center">Pricing Table</h2>
-              <hr>
-              <div class="row no-gutters my-3">
-                <div class="col-md-4 pr-2">
-                  <div class="list-group text-center my-3">
-                    <div class="list-group-item text-white bg-dark">
-                      <h4 class="text-center my-1">Basic</h4>
-                    </div>
-                    <div class="list-group-item text-uppercase font-weight-bold">
-                      Free
-                    </div>
-                    <a href="#" class="list-group-item">
-                    100 GB HDD Storage
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Web Server
-                    </a>
-                    <a href="#" class="list-group-item">
-                    DNS Hosting
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Mail Server
-                    </a>
-                    <div class="list-group-item">
-                      <button class="btn btn-success btn-lg btn-block text-truncate">Sign-up</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="list-group text-center">
-                    <div class="list-group-item text-white bg-dark">
-                      <h4 class="text-center my-1">Standard<br></h4>
-                    </div>
-                    <div class="list-group-item text-uppercase font-weight-bold">
-                      $99/mo.
-                    </div>
-                    <a href="#" class="list-group-item">
-                    1 TB HDD Storage
-                    </a>
-                    <a href="#" class="list-group-item">
-                  Database Option
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Web Server
-                    </a>
-                    <a href="#" class="list-group-item">
-                    DNS Hosting
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Mail Server
-                    </a>
-                    <a href="#" class="list-group-item">
-                    24/7 Monitoring
-                    </a>
-                    <div class="list-group-item">
-                      <button class="btn btn-success btn-lg btn-block text-truncate">Buy Now</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4 pl-2">
-                  <div class="list-group text-center my-3">
-                    <div class="list-group-item text-white bg-dark">
-                      <h4 class="text-center my-1">Managed</h4>
-                    </div>
-                    <div class="list-group-item text-uppercase font-weight-bold">
-                      Contact Us
-                    </div>
-                    <a href="#" class="list-group-item">
-                    Upto 10 TB HDD Storage
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Consultation
-                    </a>
-                    <a href="#" class="list-group-item">
-                    Custom Servers
-                    </a>
-                    <a href="#" class="list-group-item">
-                    24/7 Support
-                    </a>
-                    <div class="list-group-item">
-                      <button class="btn btn-success btn-lg btn-block text-truncate">Contact Us</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <hr>
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 col-md-6 col-sm-6 mb-md-0 mb-2">
-          <h2>Contact Us</h2>
-          <address>
-            <strong>MyCompany, Inc.</strong><br>
-            Sunny Autumn Plaza, Grand Coulee,<br>
-            CA, 91308-4075, US<br>
-            <abbr title="Phone">P:</abbr> (123) 456-7890
-          </address>
-          <h4>Social</h4>
-          <div class="row">
-            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
-            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
-            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
-            <div class="col-2"><img class="rounded-circle" src="images/32X32.gif" alt=""></div>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6 col-12">
-          <h2>Testimonials</h2>
-          <ul class="list-unstyled">
-            <li class="media">
-              <img class="mr-3" src="images/35X35.gif" alt="Generic placeholder image">
-              <div class="media-body">
-                <h5 class="mt-0 mb-1">Heading 1</h5>
-                <p class="mb-0">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-              </div>
-            </li>
-            <li class="media my-4">
-              <img class="mr-3" src="images/35X35.gif" alt="Generic placeholder image">
-              <div class="media-body">
-                <h5 class="mt-0 mb-1">Heading 2</h5>
-                <p class="mb-0">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis.</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="col-lg-4 col-12">
-          <h2>About Us</h2>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, voluptates, soluta velit nostrum ut iste exercitationem vitae ipsum repellendus laudantium ab possimus nemo odio cumque illum nulla laborum blanditiis unde.</p>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas, voluptates, soluta velit nostrum ut iste exercitationem vitae ipsum repellendus laudantium ab possimus nemo odio cumque illum nulla laborum blanditiis unde.</p>
-        </div>
-      </div>
-    </div>
-    <hr>
-    <footer class="text-center">
-      <div class="container">
         <div class="row">
-          <div class="col-12">
-            <p>Copyright © MyWebsite. All rights reserved.</p>
-          </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <!-- 替换本地GIF为原神角色图片 -->
+                    <img class="card-img-top" src="https://upload-bbs.mihoyo.com/upload/2023/09/15/129673590/990901902f4a60461877090241386581_5793691561207746454.jpg" alt="原神角色">
+                    <div class="card-body">
+                        <h5 class="card-title">角色推荐</h5>
+                        <p class="card-text">当前版本强势角色推荐，新手优先培养清单。</p>
+                        <a href="#" class="btn btn-primary">查看详情</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card">
+                    <img class="card-img-top" src="https://upload-bbs.mihoyo.com/upload/2023/09/15/129673590/4c1c5779080902513909190998877654_1234567890123456789.jpg" alt="原神攻略">
+                    <div class="card-body">
+                        <h5 class="card-title">配队攻略</h5>
+                        <p class="card-text">最强配队组合，深渊满星阵容搭配。</p>
+                        <a href="#" class="btn btn-primary">查看详情</a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="container py-sm-4">
+                <div class="row">
+                    <div class="col-md-10 my-4 mx-auto">
+                        <h2 class="text-center">原神资源订阅</h2>
+                        <hr>
+                        <div class="row no-gutters my-3">
+                            <div class="col-md-4 pr-2">
+                                <div class="list-group text-center my-3">
+                                    <div class="list-group-item text-white bg-dark">
+                                        <h4 class="text-center my-1">基础版</h4>
+                                    </div>
+                                    <div class="list-group-item text-uppercase font-weight-bold">
+                                        免费
+                                    </div>
+                                    <a href="#" class="list-group-item">
+                                        基础攻略文档
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        角色图鉴
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        每日任务提醒
+                                    </a>
+                                    <div class="list-group-item">
+                                        <button class="btn btn-success btn-lg btn-block text-truncate">立即注册</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="list-group text-center">
+                                    <div class="list-group-item text-white bg-dark">
+                                        <h4 class="text-center my-1">标准版</h4>
+                                    </div>
+                                    <div class="list-group-item text-uppercase font-weight-bold">
+                                        ¥99/月
+                                    </div>
+                                    <a href="#" class="list-group-item">
+                                        全攻略解锁
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        抽卡规划
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        深渊配队定制
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        材料收集路线
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        24/7在线答疑
+                                    </a>
+                                    <div class="list-group-item">
+                                        <button class="btn btn-success btn-lg btn-block text-truncate">立即购买</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 pl-2">
+                                <div class="list-group text-center my-3">
+                                    <div class="list-group-item text-white bg-dark">
+                                        <h4 class="text-center my-1">定制版</h4>
+                                    </div>
+                                    <div class="list-group-item text-uppercase font-weight-bold">
+                                        联系客服
+                                    </div>
+                                    <a href="#" class="list-group-item">
+                                        一对一教学
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        账号代肝
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        专属配队方案
+                                    </a>
+                                    <a href="#" class="list-group-item">
+                                        全天候专属客服
+                                    </a>
+                                    <div class="list-group-item">
+                                        <button class="btn btn-success btn-lg btn-block text-truncate">联系我们</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-md-0 mb-2">
+                <h2>联系我们</h2>
+                <address>
+                    <strong>原神攻略站</strong><br>
+                    提瓦特大陆·璃月港<br>
+                    璃月，提瓦特<br>
+                    <abbr title="Phone">电话：</abbr> (123) 456-7890
+                </address>
+                <h4>社交平台</h4>
+                <div class="row">
+                    <!-- 替换本地GIF为社交图标（使用Font Awesome） -->
+                    <div class="col-2"><i class="fab fa-bilibili fa-2x text-primary"></i></div>
+                    <div class="col-2"><i class="fab fa-weixin fa-2x text-success"></i></div>
+                    <div class="col-2"><i class="fab fa-weibo fa-2x text-danger"></i></div>
+                    <div class="col-2"><i class="fab fa-qq fa-2x text-info"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12">
+                <h2>用户评价</h2>
+                <ul class="list-unstyled">
+                    <li class="media">
+                        <img class="mr-3 rounded-circle" src="https://upload-bbs.mihoyo.com/upload/2023/08/10/129035610/12345678901234567890123456789012_1234567890123456789.jpg" width="35" height="35" alt="用户头像">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1">旅行者1号</h5>
+                            <p class="mb-0">攻略非常详细，新手跟着做轻松满探索度，抽卡模拟器也很准！</p>
+                        </div>
+                    </li>
+                    <li class="media my-4">
+                        <img class="mr-3 rounded-circle" src="https://upload-bbs.mihoyo.com/upload/2023/08/10/129035610/09876543210987654321098765432109_0987654321098765432.jpg" width="35" height="35" alt="用户头像">
+                        <div class="media-body">
+                            <h5 class="mt-0 mb-1">派蒙的小跟班</h5>
+                            <p class="mb-0">配队攻略太实用了，终于过了深渊12层，感谢大佬分享！</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-4 col-12">
+                <h2>关于我们</h2>
+                <p>原神攻略站专注于提供最新、最全面的原神游戏攻略，涵盖角色、配队、抽卡、地图探索等全方面内容，助力每一位旅行者畅游提瓦特。</p>
+                <p>我们的团队由资深原神玩家组成，持续更新版本内容，确保攻略的时效性和准确性。</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <footer class="text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p>Copyright © 原神攻略站 2026. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
     </footer>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap-4.0.0.js"></script>
-  </body>
+
+    <!-- 引入Bootstrap JS CDN（替换本地文件） -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- 引入Font Awesome（社交图标） -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- B站季节动效交互逻辑优化 -->
+    <script>
+        const header = document.getElementById('bilibiliHeader');
+        let startingPoint;
+
+        // 鼠标进入事件：记录起始位置，添加移动状态
+        header.addEventListener('mouseenter', (e) => {
+            startingPoint = e.clientX;
+            header.classList.add('moving');
+        });
+
+        // 鼠标离开事件：重置状态，恢复默认值
+        header.addEventListener('mouseout', () => {
+            header.classList.remove('moving');
+            header.style.setProperty('--percentage', 0.5);
+        });
+
+        // 鼠标移动事件：限制百分比范围0-1，避免样式异常
+        header.addEventListener('mousemove', (e) => {
+            let percentage = (e.clientX - startingPoint) / window.outerWidth + 0.5;
+            // 限制percentage在0到1之间，防止opacity/transform异常
+            percentage = Math.max(0, Math.min(1, percentage));
+            header.style.setProperty('--percentage', percentage);
+        });
+    </script>
+</body>
 </html>
