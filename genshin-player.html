@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原神音乐播放器 | 网易云风格</title>
+    <!-- 引入Tailwind CSS实现网易云风格布局 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 自定义原神配色（贴近网易云红+原神主题色） -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        genshin: {
+                            red: '#C22C38', // 主红（网易云风格）
+                            dark: '#181818', // 背景黑
+                            gray: '#282828', // 卡片灰
+                            light: '#E5E5E5', // 浅灰文本
+                            accent: '#F0B95E', // 原神金色点缀
+                            blue: '#4A90E2', // 辅助蓝
+                        },
+                    },
+                    fontFamily: {
+                        netease: ['"Noto Sans SC"', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            /* 网易云风格圆角和阴影 */
+            .netease-radius {
+                border-radius: 8px;
+            }
+            .netease-shadow {
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            }
+            /* 进度条样式 */
+            .progress-bar::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background: #C22C38;
+                cursor: pointer;
+            }
+            /* 原神背景渐变 */
+            .genshin-bg {
+                background: linear-gradient(135deg, #181818 0%, #282828 100%);
+                background-image: url('https://upload-bbs.mihoyo.com/upload/2023/08/10/129035610/8c8d19c5426598064898599386556680_8556261106151391050.jpg');
+                background-size: cover;
+                background-blend-mode: overlay;
+                background-attachment: fixed;
+            }
+        }
+    </style>
+    <!-- 引入Font Awesome图标（播放/暂停等） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-genshin-dark text-genshin-light font-netease genshin-bg min-h-screen">
+    <!-- 顶部导航栏（网易云风格） -->
+    <nav class="bg-genshin-red/90 backdrop-blur-md py-3 px-6 fixed top-0 w-full z-50 netease-shadow">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white flex items-center">
+                <i class="fa-solid fa-music mr-2"></i>原神音乐播放器
+            </h1>
+            <div class="flex gap-4">
+                <a href="#" class="text-white hover:text-genshin-accent transition-colors">
+                    <i class="fa-solid fa-search mr-1"></i>搜索
+                </a>
+                <a href="#" class="text-white hover:text-genshin-accent transition-colors">
+                    <i class="fa-solid fa-heart mr-1"></i>我的收藏
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主播放器区域（顶部留导航栏空间） -->
+    <div class="container mx-auto pt-20 pb-10 px-4">
+        <!-- 播放器主体 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+            <!-- 左侧封面+信息 -->
+            <div class="lg:col-span-1 flex flex-col items-center">
+                <!-- 原神封面图（旋转动画） -->
+                <div class="relative w-64 h-64 mb-6">
+                    <img id="coverImg" src="https://upload-bbs.mihoyo.com/upload/2023/09/15/129673590/990901902f4a60461877090241386581_5793691561207746454.jpg" 
+                         alt="原神封面" class="w-full h-full rounded-full object-cover netease-shadow" id="cover">
+                    <!-- 旋转动画遮罩 -->
+                    <div class="absolute inset-0 rounded-full border-4 border-genshin-red/50"></div>
+                </div>
+
+                <!-- 歌曲信息 -->
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold text-white mb-2" id="songTitle">璃月·轻策庄</h2>
+                    <p class="text-genshin-accent mb-4" id="songSinger">陈致逸 / HOYO-MiX</p>
+                    <div class="flex justify-center gap-2 text-sm text-gray-300">
+                        <span><i class="fa-solid fa-play mr-1"></i>播放量：123.4万</span>
+                        <span><i class="fa-solid fa-comment mr-1"></i>评论：892</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧播放控制+歌单 -->
+            <div class="lg:col-span-2 bg-genshin-gray/80 p-6 netease-radius netease-shadow backdrop-blur-sm">
+                <!-- 播放控制区 -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold mb-4 border-b border-gray-600 pb-2">播放控制</h3>
+                    
+                    <!-- 进度条 -->
+                    <div class="mb-6">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span id="currentTime">00:00</span>
+                            <span id="totalTime">03:45</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="0" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer progress-bar" id="progress">
+                    </div>
+
+                    <!-- 播放按钮组 -->
+                    <div class="flex justify-center items-center gap-6 mb-6">
+                        <button class="text-xl hover:text-genshin-red transition-colors" id="prevBtn">
+                            <i class="fa-solid fa-step-backward"></i>
+                        </button>
+                        <button class="text-3xl hover:text-genshin-red transition-colors bg-genshin-red/20 p-4 rounded-full" id="playBtn">
+                            <i class="fa-solid fa-play" id="playIcon"></i>
+                        </button>
+                        <button class="text-xl hover:text-genshin-red transition-colors" id="nextBtn">
+                            <i class="fa-solid fa-step-forward"></i>
+                        </button>
+                    </div>
+
+                    <!-- 音量控制 -->
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <input type="range" min="0" max="100" value="80" class="w-32 h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer progress-bar" id="volume">
+                    </div>
+                </div>
+
+                <!-- 歌单列表 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-4 border-b border-gray-600 pb-2">原神原声歌单</h3>
+                    <ul class="space-y-2" id="playlist">
+                        <li class="p-2 hover:bg-genshin-red/10 rounded transition-colors cursor-pointer song-item active" data-src="https://music.163.com/song/media/outer/url?id=1385821107.mp3">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-music mr-2 text-genshin-red"></i>
+                                    <span>璃月·轻策庄 - 陈致逸 / HOYO-MiX</span>
+                                </div>
+                                <span>03:45</span>
+                            </div>
+                        </li>
+                        <li class="p-2 hover:bg-genshin-red/10 rounded transition-colors cursor-pointer song-item" data-src="https://music.163.com/song/media/outer/url?id=1403254097.mp3">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-music mr-2 text-gray-400"></i>
+                                    <span>蒙德·风起地 - 陈致逸 / HOYO-MiX</span>
+                                </div>
+                                <span>02:58</span>
+                            </div>
+                        </li>
+                        <li class="p-2 hover:bg-genshin-red/10 rounded transition-colors cursor-pointer song-item" data-src="https://music.163.com/song/media/outer/url?id=1461372150.mp3">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-music mr-2 text-gray-400"></i>
+                                    <span>稻妻·鸣神岛 - 陈致逸 / HOYO-MiX</span>
+                                </div>
+                                <span>04:12</span>
+                            </div>
+                        </li>
+                        <li class="p-2 hover:bg-genshin-red/10 rounded transition-colors cursor-pointer song-item" data-src="https://music.163.com/song/media/outer/url?id=1818082166.mp3">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <i class="fa-solid fa-music mr-2 text-gray-400"></i>
+                                    <span>须弥·须弥城 - 陈致逸 / HOYO-MiX</span>
+                                </div>
+                                <span>03:30</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面跳转按钮区域（末尾） -->
+        <div class="mt-12 bg-genshin-gray/80 p-6 netease-radius netease-shadow backdrop-blur-sm">
+            <h3 class="text-lg font-bold mb-4 text-center">返回其他页面</h3>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="index.html" class="bg-genshin-red hover:bg-red-700 text-white py-2 px-6 rounded transition-colors flex items-center">
+                    <i class="fa-solid fa-home mr-2"></i>原神主题主页
+                </a>
+                <a href="arknights-upload.html" class="bg-genshin-blue hover:bg-blue-700 text-white py-2 px-6 rounded transition-colors flex items-center">
+                    <i class="fa-solid fa-pen-nib mr-2"></i>明日方舟涂鸦上传页
+                </a>
+                <a href="simple-danmaku-system.html" class="bg-genshin-accent hover:bg-amber-600 text-white py-2 px-6 rounded transition-colors flex items-center">
+                    <i class="fa-solid fa-comment-dots mr-2"></i>简易弹幕系统
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部播放栏（固定底部，网易云风格） -->
+    <div class="fixed bottom-0 w-full bg-genshin-gray/90 backdrop-blur-md py-2 px-6 netease-shadow">
+        <div class="container mx-auto flex justify-between items-center">
+            <!-- 底部歌曲信息 -->
+            <div class="flex items-center gap-3">
+                <img src="https://upload-bbs.mihoyo.com/upload/2023/09/15/129673590/990901902f4a60461877090241386581_5793691561207746454.jpg" 
+                     alt="底部封面" class="w-12 h-12 rounded object-cover">
+                <div>
+                    <p class="text-sm font-bold">璃月·轻策庄</p>
+                    <p class="text-xs text-gray-400">陈致逸 / HOYO-MiX</p>
+                </div>
+            </div>
+
+            <!-- 底部播放控制 -->
+            <div class="flex items-center gap-3">
+                <button class="text-sm hover:text-genshin-red transition-colors" id="bottomPlayBtn">
+                    <i class="fa-solid fa-play" id="bottomPlayIcon"></i>
+                </button>
+                <input type="range" min="0" max="100" value="0" class="w-48 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer progress-bar" id="bottomProgress">
+            </div>
+
+            <!-- 底部音量 -->
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-volume-high text-sm"></i>
+                <input type="range" min="0" max="100" value="80" class="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer progress-bar" id="bottomVolume">
+            </div>
+        </div>
+    </div>
+
+    <!-- 音频元素（隐藏） -->
+    <audio id="audioPlayer" preload="metadata">
+        <source src="https://music.163.com/song/media/outer/url?id=1385821107.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+
+    <script>
+        // 核心变量
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const playIcon = document.getElementById('playIcon');
+        const bottomPlayBtn = document.getElementById('bottomPlayBtn');
+        const bottomPlayIcon = document.getElementById('bottomPlayIcon');
+        const progress = document.getElementById('progress');
+        const bottomProgress = document.getElementById('bottomProgress');
+        const volume = document.getElementById('volume');
+        const bottomVolume = document.getElementById('bottomVolume');
+        const currentTime = document.getElementById('currentTime');
+        const totalTime = document.getElementById('totalTime');
+        const cover = document.getElementById('cover');
+        const songTitle = document.getElementById('songTitle');
+        const songSinger = document.getElementById('songSinger');
+        const playlist = document.querySelectorAll('.song-item');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let isPlaying = false;
+        let currentSongIndex = 0;
+
+        // 初始化封面旋转动画
+        let coverAnimation;
+        function startCoverRotate() {
+            coverAnimation = cover.animate(
+                [{ transform: 'rotate(0deg)' }, { transform: 'rotate(360deg)' }],
+                { duration: 10000, iterations: Infinity }
+            );
+            coverAnimation.pause();
+        }
+        startCoverRotate();
+
+        // 播放/暂停切换
+        function togglePlay() {
+            if (isPlaying) {
+                audio.pause();
+                coverAnimation.pause();
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+                bottomPlayIcon.classList.remove('fa-pause');
+                bottomPlayIcon.classList.add('fa-play');
+            } else {
+                audio.play();
+                coverAnimation.play();
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+                bottomPlayIcon.classList.remove('fa-play');
+                bottomPlayIcon.classList.add('fa-pause');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 绑定播放按钮事件
+        playBtn.addEventListener('click', togglePlay);
+        bottomPlayBtn.addEventListener('click', togglePlay);
+
+        // 音量控制（同步顶部和底部）
+        volume.addEventListener('input', (e) => {
+            audio.volume = e.target.value / 100;
+            bottomVolume.value = e.target.value;
+        });
+        bottomVolume.addEventListener('input', (e) => {
+            audio.volume = e.target.value / 100;
+            volume.value = e.target.value;
+        });
+
+        // 音频进度更新
+        audio.addEventListener('timeupdate', () => {
+            const progressPercent = (audio.currentTime / audio.duration) * 100;
+            progress.value = progressPercent;
+            bottomProgress.value = progressPercent;
+            
+            // 格式化时间
+            currentTime.textContent = formatTime(audio.currentTime);
+            totalTime.textContent = formatTime(audio.duration);
+        });
+
+        // 点击进度条跳转播放位置
+        progress.addEventListener('input', (e) => {
+            const seekTime = (e.target.value / 100) * audio.duration;
+            audio.currentTime = seekTime;
+            bottomProgress.value = e.target.value;
+        });
+        bottomProgress.addEventListener('input', (e) => {
+            const seekTime = (e.target.value / 100) * audio.duration;
+            audio.currentTime = seekTime;
+            progress.value = e.target.value;
+        });
+
+        // 时间格式化函数（秒转分:秒）
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '00:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 音频加载完成后更新总时长
+        audio.addEventListener('loadedmetadata', () => {
+            totalTime.textContent = formatTime(audio.duration);
+        });
+
+        // 歌单点击切换歌曲
+        playlist.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                // 移除所有激活状态
+                playlist.forEach(i => i.classList.remove('active'));
+                // 添加当前激活状态
+                item.classList.add('active');
+                // 更新音频源
+                audio.src = item.dataset.src;
+                currentSongIndex = index;
+                // 更新歌曲信息
+                const songInfo = item.querySelector('span').textContent.split(' - ');
+                songTitle.textContent = songInfo[0];
+                songSinger.textContent = songInfo[1];
+                // 自动播放
+                isPlaying = false;
+                togglePlay();
+            });
+        });
+
+        // 上一曲/下一曲
+        prevBtn.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex - 1 + playlist.length) % playlist.length;
+            playlist[currentSongIndex].click();
+        });
+        nextBtn.addEventListener('click', () => {
+            currentSongIndex = (currentSongIndex + 1) % playlist.length;
+            playlist[currentSongIndex].click();
+        });
+
+        // 音频播放结束自动下一曲
+        audio.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+    </script>
+</body>
+</html>
