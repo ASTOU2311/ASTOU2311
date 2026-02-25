@@ -25,6 +25,31 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        /* 跳转到搜索页的按钮样式 */
+        .to-search-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            text-decoration: none;
+            z-index: 1003;
+        }
+        .to-search-btn:hover {
+            transform: translateY(-4px);
+            background: rgba(0,0,0,0.25);
+        }
+
         /* 核心修改：使用无防盗链的背景图链接 */
         .danmaku-container {
             position: relative;
@@ -215,6 +240,9 @@
     </style>
 </head>
 <body>
+    <!-- 跳转到搜索页面的按钮（左上角） -->
+    <a href="index.html" class="to-search-btn">🔍</a>
+
     <h1>简易弹幕系统</h1>
     <a href="index.html" class="jump-back-btn">返回原神主题主页</a>
     <div class="danmaku-container" id="danmaku-container"></div>
