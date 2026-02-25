@@ -25,7 +25,7 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* 跳转到搜索页的按钮样式 */
+        /* 跳转到search-page.html的按钮样式（左上角主按钮） */
         .to-search-btn {
             position: fixed;
             top: 20px;
@@ -48,6 +48,31 @@
         .to-search-btn:hover {
             transform: translateY(-4px);
             background: rgba(0,0,0,0.25);
+        }
+
+        /* 新增：额外的搜索页快捷按钮（右上角，可选） */
+        .search-shortcut-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: rgba(0,123,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #007bff;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+            text-decoration: none;
+            z-index: 1003;
+        }
+        .search-shortcut-btn:hover {
+            transform: translateY(-4px);
+            background: rgba(0,123,255,0.25);
         }
 
         /* 核心修改：使用无防盗链的背景图链接 */
@@ -240,10 +265,14 @@
     </style>
 </head>
 <body>
-    <!-- 跳转到搜索页面的按钮（左上角） -->
-    <a href="index.html" class="to-search-btn">🔍</a>
+    <!-- 核心修改：将原有跳转到index.html的按钮改为指向search-page.html -->
+    <a href="search-page.html" class="to-search-btn">🔍</a>
+
+    <!-- 新增：右上角额外的搜索页快捷按钮（可选，可删除） -->
+    <a href="search-page.html" class="search-shortcut-btn">🔎</a>
 
     <h1>简易弹幕系统</h1>
+    <!-- 保留原返回原神主页按钮，如需也改为search-page.html可修改此处href -->
     <a href="index.html" class="jump-back-btn">返回原神主题主页</a>
     <div class="danmaku-container" id="danmaku-container"></div>
     <button class="open-video-btn" onclick="openVideo()">打开示例视频</button>
