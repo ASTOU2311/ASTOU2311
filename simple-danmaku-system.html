@@ -25,14 +25,14 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        /* 核心修改：弹幕容器改为森林背景 */
+        /* 核心修改：替换为指定的B站壁纸作为背景 */
         .danmaku-container {
             position: relative;
             width: 100%;
             max-width: 1200px;
             height: 400px;
-            /* 森林背景图 + 半透明黑色叠加，保证弹幕文字清晰 */
-            background: url('https://picsum.photos/id/15/1200/400') center/cover no-repeat, rgba(0,0,0,0.7);
+            /* 替换为你指定的B站壁纸链接 + 半透明黑色叠加 */
+            background: url('http://i0.hdslb.com/bfs/live/room_bg/ffcc030be5e1cd3901c8d4fc1a6a33d5f0b87605.jpg@1920w_1080h.webp') center/cover no-repeat, rgba(0,0,0,0.7);
             background-blend-mode: overlay;
             border-radius: 10px;
             overflow: hidden;
@@ -221,7 +221,7 @@
     <!-- 新增：返回主页按钮 -->
     <a href="index.html" class="jump-back-btn">返回原神主题主页</a>
 
-    <!-- 弹幕容器（森林背景） -->
+    <!-- 弹幕容器（使用指定的B站壁纸背景） -->
     <div class="danmaku-container" id="danmaku-container"></div>
 
     <!-- 打开视频按钮 -->
